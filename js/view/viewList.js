@@ -1,8 +1,8 @@
-class View {
+class ViewList {
   constructor() {
     this.initView();
-    this._temporaryTodoText;
-    this._initListeners();
+    this.temporaryTodoText;
+    this.initListeners();
   }
 
   initView() {
@@ -45,9 +45,7 @@ class View {
   }
 
   getElement(selector) {
-    const element = document.querySelector(selector);
-
-    return element;
+    return document.querySelector(selector);
   }
 
   displayTodos(todos) {
@@ -89,10 +87,10 @@ class View {
     }
   }
 
-  _initListeners() {
+  initListeners() {
     this.todoList.addEventListener('input', event => {
       if (event.target.className === 'editable') {
-        this._temporaryTodoText = event.target.innerText;
+        this.temporaryTodoText = event.target.innerText;
       }
     });
   }
@@ -110,11 +108,11 @@ class View {
 
   editTodo(handler) {
     this.todoList.addEventListener('focusout', event => {
-      if (this._temporaryTodoText) {
+      if (this.temporaryTodoText) {
         const id = parseInt(event.target.parentElement.id);
 
-        handler(id, this._temporaryTodoText);
-        this._temporaryTodoText = '';
+        handler(id, this.temporaryTodoText);
+        this.temporaryTodoText = '';
       }
     });
   }
@@ -129,7 +127,7 @@ class View {
     });
   }
 
-  toggleTodo(handler) {
+  checkTodo(handler) {
     this.todoList.addEventListener('change', event => {
       if (event.target.type === 'checkbox') {
         const id = parseInt(event.target.parentElement.id);
@@ -140,4 +138,4 @@ class View {
   }
 }
 
-export { View };
+export { ViewList };
