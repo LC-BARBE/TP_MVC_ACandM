@@ -29,7 +29,7 @@ class View {
     this.app.append(this.title, this.form, this.todoList);
   }
 
-  get _todoText() {
+  get inputText() {
     return this.input.value;
   }
 
@@ -101,8 +101,8 @@ class View {
     this.form.addEventListener('submit', event => {
       event.preventDefault();
 
-      if (this._todoText) {
-        handler(this._todoText);
+      if (this.inputText) {
+        handler(this.inputText);
         this.resetInput();
       }
     });
