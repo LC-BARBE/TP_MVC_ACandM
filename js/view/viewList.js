@@ -1,8 +1,12 @@
-class ViewList {
+import {TodoList} from "../model/todoList.js";
+
+export class ViewList {
   constructor() {
+    this.todos = new TodoList();
     this.initView();
+    this.displayTodos()
     this.temporaryTodoText;
-    this.initListeners();
+    // this.initListeners();
   }
 
   initView() {
@@ -18,15 +22,17 @@ class ViewList {
     this.input.type = 'text';
     this.input.placeholder = 'Add a task';
     this.input.name = 'todo';
+    this.input.id = 'inputDescription';
 
     this.submitButton = this.createElement('button');
+    this.submitButton.id = 'addTodo';
     this.submitButton.textContent = 'Add';
 
-    this.todoList = this.createElement('ul', 'todo-list');
+    this.todoListView = this.createElement('ul', 'todo-list');
 
     this.form.append(this.input, this.submitButton);
 
-    this.app.append(this.title, this.form, this.todoList);
+    this.app.append(this.title, this.form, this.todoListView);
   }
 
   get inputText() {
@@ -48,94 +54,46 @@ class ViewList {
     return document.querySelector(selector);
   }
 
-  displayTodos(todos) {
-    while (this.todoList.firstChild) {
-      this.todoList.removeChild(this.todoList.firstChild);
+  displayTodos() {
+    let todolist = this.todos.tasks;
+    console.log(this.todos.tasks);
+
+    while (this.todoListView.firstChild) {
+      this.todoListView.removeChild(this.todoListView.firstChild);
     }
 
-    if (todos.length === 0) {
+    if (todolist.length === 0) {
       const p = this.createElement('p');
       p.textContent = 'Nothing to do.';
-      this.todoList.append(p);
+      this.todoListView.append(p);
     } else {
-      todos.forEach(todo => {
+      todolist.forEach(todo => {
         const li = this.createElement('li');
-        li.id = todo.id;
+        li.id = todo._id;
 
         const checkbox = this.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.checked = todo.complete;
+        checkbox.checked = todo._completed;
 
         const span = this.createElement('span');
         span.contentEditable = true;
         span.classList.add('editable');
 
-        if (todo.complete) {
+        if (todo._completed) {
           const strike = this.createElement('s');
-          strike.textContent = todo.text;
+          strike.textContent = todo._description;
           span.append(strike);
         } else {
-          span.textContent = todo.text;
+          span.textContent = todo._description;
         }
 
         const deleteButton = this.createElement('button', 'delete');
         deleteButton.textContent = 'Delete';
         li.append(checkbox, span, deleteButton);
 
-        this.todoList.append(li);
+        this.todoListView.append(li);
       });
     }
   }
 
-  initListeners() {
-    this.todoList.addEventListener('input', event => {
-      if (event.target.className === 'editable') {
-        this.temporaryTodoText = event.target.innerText;
-      }
-    });
-  }
-
-  addTodo(handler) {
-    this.form.addEventListener('submit', event => {
-      event.preventDefault();
-
-      if (this.inputText) {
-        handler(this.inputText);
-        this.resetInput();
-      }
-    });
-  }
-
-  editTodo(handler) {
-    this.todoList.addEventListener('focusout', event => {
-      if (this.temporaryTodoText) {
-        const id = parseInt(event.target.parentElement.id);
-
-        handler(id, this.temporaryTodoText);
-        this.temporaryTodoText = '';
-      }
-    });
-  }
-
-  deleteTodo(handler) {
-    this.todoList.addEventListener('click', event => {
-      if (event.target.className === 'delete') {
-        const id = parseInt(event.target.parentElement.id);
-
-        handler(id);
-      }
-    });
-  }
-
-  checkTodo(handler) {
-    this.todoList.addEventListener('change', event => {
-      if (event.target.type === 'checkbox') {
-        const id = parseInt(event.target.parentElement.id);
-
-        handler(id);
-      }
-    });
-  }
 }
-
-export { ViewList };

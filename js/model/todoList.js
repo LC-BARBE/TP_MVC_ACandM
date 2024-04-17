@@ -1,30 +1,56 @@
-class TodoList {
+import {Task} from "./task.js";
+import {ViewList} from "../view/viewList.js";
+
+/**
+ * @typedef {Object} TodoList
+ * @property {Task[]} _tasks - task list
+ */
+export class TodoList {
+
     constructor() {
-        this.getTodoInLocalStorage();
+        if (!TodoList._instance) {
+            this._tasks = []; // Liste des tâches
+            this.initTasks();
+            TodoList._instance = this; // Instance unique de TodoList
+        }
+        return TodoList._instance;
     }
 
-    todoListChanged(callback) {
-        this.onTodoListChanged = callback;
+    initTasks() {
+        const sample = ["task1", "task2", "task3"];
+        sample.forEach(description => {
+            this.addTodo(new Task(null, description));
+        })
     }
 
-    setTodoInLocalStorage(todos) {
-        this.onTodoListChanged(todos);
-        localStorage.setItem('todos', JSON.stringify(todos));
+    get tasks() {
+        return this._tasks;
     }
 
-    getTodoInLocalStorage() {
-        this.todos = JSON.parse(localStorage.getItem('todos')) || [];
+    set tasks(value) {
+        this._tasks = value;
     }
 
-    addTodo(todoText) {
-        const todo = {
-            id: this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1,
-            text: todoText,
-            complete: false
-        };
+    get instance() {
+        return this._instance;
+    }
 
-        this.todos.push(todo);
-        this.setTodoInLocalStorage(this.todos);
+    set instance(value) {
+        this._instance = value;
+    }
+
+
+    addTodo(todo) {
+        if (todo instanceof Task) {
+            const todoInit = new Task(
+                this._tasks.length > 0 ? this._tasks[this._tasks.length - 1].id + 1 : 1,
+                todo.description
+            )
+            this._tasks.push(todoInit);
+            return todoInit.id
+        }
+
+        return -1
     }
 
     editTodo(id, updatedText) {
@@ -49,5 +75,3 @@ class TodoList {
         this.setTodoInLocalStorage(this.todos);
     }
 }
-
-export {TodoList};

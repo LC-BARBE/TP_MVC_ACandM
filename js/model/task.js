@@ -1,23 +1,43 @@
-class Task {
+
+/**
+ * @typedef {Object} Task
+ * @property {number} id - task id
+ * @property {string} description - task description
+ */
+export class Task {
+
     constructor(id, description, completed = false) {
-        this.id = id;
-        this.description = description;
-        this.completed = completed;
+        this._id = id;
+        this._description = description;
+        this._completed = completed;
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    set id(value) {
+        this._id = value;
+    }
+
+    get description() {
+        return this._description;
+    }
+
+    set description(value) {
+        this._description = value;
     }
 
     complete() {
-        this.completed = true;
+        this._completed = true;
     }
 
     uncomplete() {
-        this.completed = false;
+        this._completed = false;
     }
 
     isCompleted() {
-        return this.completed;
+        return this._completed;
     }
 
-    setDescription(description) {
-        this.description = description;
-    }
 }
